@@ -2,7 +2,7 @@ services:
   portainer:
     image: portainer/portainer-ce:latest
     container_name: portainer
-    restart: always
+    restart: unless-stopped
     security_opt:
       - no-new-privileges:true
     volumes:
@@ -13,6 +13,12 @@ services:
       - "${PORTAINER_PORT:?}:9000"
       - "8000:8000"
     command: -H unix:///var/run/docker.sock
+    networks:
+      - portainer_network
 
 volumes:
   portainer_data:
+
+networks:
+  portainer_network:
+    driver: bridge

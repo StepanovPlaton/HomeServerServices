@@ -7,10 +7,8 @@ services:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-    # ports:
-    #   - "9090:9090"
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
     networks:
       - grafana_network
 
@@ -24,7 +22,7 @@ services:
       - ./grafana:/etc/grafana/provisioning
       - grafana_data:/var/lib/grafana
     environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:?}    # Ваш логин
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER:?} # Ваш логин
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:?} # Ваш пароль
     networks:
       - grafana_network
@@ -38,13 +36,11 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
-      - '--collector.systemd'
-    # ports:
-    #   - "9100:9100"
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+      - "--collector.systemd"
     networks:
       - grafana_network
 

@@ -2,9 +2,9 @@ services:
   autossh:
     build: .
     container_name: autossh
-    restart: always
+    restart: unless-stopped
     ports:
-      - "${SSH_TUNNEL_TO}:${SSH_TUNNEL_TO}"
+      - "${SSH_TUNNEL_TO:?}:${SSH_TUNNEL_TO:?}"
 
     environment:
       # Пароль берется из переменной SSHPASS (для sshpass)
@@ -25,5 +25,12 @@ services:
       -o ServerAliveInterval=60
       -o ServerAliveCountMax=3
 
-      -L 0.0.0.0:${SSH_TUNNEL_TO:?}:localhost:${SSH_TUNNEL_FROM}
-      ${SSH_USER}@${SSH_HOST} -p ${SSH_PORT}
+      -L 0.0.0.0:${SSH_TUNNEL_TO:?}:localhost:${SSH_TUNNEL_FROM:?}
+      ${SSH_USER:?}@${SSH_HOST:?}
+      -p ${SSH_PORT:-22}
+    networks:
+      - autossh_network
+
+networks:
+  autossh_network:
+    driver: bridge

@@ -2,7 +2,7 @@ services:
   samba:
     image: dperson/samba
     container_name: samba
-    restart: always
+    restart: unless-stopped
     ports:
       - "139:139"
       - "445:445"
@@ -10,10 +10,16 @@ services:
       - ${SHARED_FOLDER:?}:/mnt/shared
     environment:
       - TZ=Europe/Samara
-      - USERID=${OWNER_USERID:?}  # UID вашего пользователя в Linux (id -u)
+      - USERID=${OWNER_USERID:?} # UID вашего пользователя в Linux (id -u)
       - GROUPID=${OWNER_GROUPID:?} # GID вашего пользователя в Linux (id -g)
 
     command: >
       -u "${SMB_USER:?};${SMB_PASSWORD:?}"
       -s "${READONLY_NET_NAME:?};/mnt/shared;yes;yes;yes"
       -s "${NET_NAME:?};/mnt/shared;yes;no;no;${SMB_USER:?}"
+    networks:
+      - samba_network
+
+networks:
+  samba_network:
+    driver: bridge
