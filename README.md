@@ -1,13 +1,13 @@
 # Home Server Services
 
-> **Home Server Services** - это полный набор сервисов в Docker для организации моего домашнего сервера!
+> **Home Server Services** - это полный набор сервисов в Docker для организации домашнего сервера!
 >
 > Главное - это **модульность** и **воспроизводимая установка**. Можно развернуть за 15 минут!
 
 ![](./screenshots/grafana.jpg)
 ![](./screenshots/portainer.jpg)
 
-## Сервер:
+## Мой сервер:
 
 - CheckWay POS88
   - [Intel Celeron J1900](https://technical.city/ru/cpu/Core-2-Duo-E8400-protiv-Celeron-J1900) @ 1.99GHz (64 bit)
