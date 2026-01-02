@@ -1,0 +1,7 @@
+**/.env
+!.env.example
+
+syncthing/config/*
+transmission/config/*
+
+!.keep

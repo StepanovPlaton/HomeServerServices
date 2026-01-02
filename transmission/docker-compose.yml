@@ -1,0 +1,24 @@
+services:
+  transmission:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    environment:
+      - PUID=${OWNER_USERID:?}
+      - PGID=${OWNER_GROUPID:?}
+      - TZ=Europe/Samara
+      - USER=${TRANSMISSION_USER:?}
+      - PASS=${TRANSMISSION_PASSWORD:?}
+      # - WHITELIST=127.0.0.1,192.168.1.* # Список разрешенных IP (опционально)
+    volumes:
+      - ./config:/config
+      - ${TRANSMISSION_DOWNLOADS:?}:/downloads
+      - ${TRANSMISSION_WATCH:?}:/watch # Добавляет автоматически все torrent файлы из этой папки
+    ports:
+      - ${TRANSMISSION_WEB_UI_PORT}:9091 # Веб-интерфейс
+      - 51413:51413 # Порт для входящих соединений (TCP)
+      - 51413:51413/udp # Порт для входящих соединений (UDP)
+    restart: unless-stopped
