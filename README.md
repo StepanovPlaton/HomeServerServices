@@ -17,12 +17,12 @@
 - Debian 13 (Trixie) Minimal
   - [Docker](https://www.docker.com/)
   - [Docker Compose](https://docs.docker.com/compose/)
-  - Политика частоты CPU - ondemand
+  - Политика частоты работы CPU - `ondemand`
 
 ## Сервисы:
 
-- [Portainer](./portainer/) (server:9443) - Управление контейнерами
-- [Grafana](./grafana/) (server:3000) - Загруженность сервера
+- [Portainer](./portainer/) - Управление контейнерами
+- [Grafana](./grafana/) - Загруженность сервера
   - [Prometheus](./grafana/prometheus.yml)
   - [Node Exporter](./grafana/)
 - [Samba](./samba/) - Сетевой диск
