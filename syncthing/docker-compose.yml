@@ -3,15 +3,21 @@ services:
     image: syncthing/syncthing:latest
     container_name: syncthing
     hostname: ${SYNCTHING_HOSTNAME:?} # Имя устройства в сети Syncthing
+    restart: unless-stopped
     environment:
-      - PUID=${OWNER_USERID} # ID пользователя в системе (можно узнать командой id)
-      - PGID=${OWNER_GROUPID} # ID группы в системе
+      - PUID=${OWNER_USERID:?} # ID пользователя в системе (можно узнать командой id)
+      - PGID=${OWNER_GROUPID:?} # ID группы в системе
     volumes:
       - ./config:/var/syncthing/config # Конфигурация и база данных
-      - ${SYNCTHING_FOLDER}:/var/syncthing/Sync # Папка с данными (путь на хосте:путь в контейнере)
+      - ${SYNCTHING_FOLDER:?}:/var/syncthing/Sync # Папка с данными (путь на хосте:путь в контейнере)
     ports:
-      - ${SYNCTHING_WEB_UI_PORT}:8384 # Web GUI (управление через браузер)
+      - ${SYNCTHING_WEB_UI_PORT:?}:8384 # Web GUI (управление через браузер)
       - 22000:22000/tcp # Передача данных
       - 22000:22000/udp # Передача данных (QUIC)
       - 21027:21027/udp # Локальный поиск (Discovery)
-    restart: unless-stopped
+    networks:
+      - syncthing_network
+
+networks:
+  syncthing_network:
+    driver: bridge
