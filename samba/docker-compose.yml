@@ -17,3 +17,6 @@ services:
       -u "${SMB_USER:?};${SMB_PASSWORD:?}"
       -s "${READONLY_NET_NAME:?};/mnt/shared;yes;yes;yes"
       -s "${NET_NAME:?};/mnt/shared;yes;no;no;${SMB_USER:?}"
+      -g "acl allow execute always = yes"
+      -g "map archive = yes"
+      -g "client max protocol = SMB3"

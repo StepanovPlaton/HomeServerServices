@@ -3,5 +3,9 @@
 
 syncthing/config/*
 transmission/config/*
+proxy/nginx/init/default.conf
+proxy/nginx/conf.d/default.conf
+proxy/ssl/conf/*
+proxy/ssl/www/*
 
 !.keep

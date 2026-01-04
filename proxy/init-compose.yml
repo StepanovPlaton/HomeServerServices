@@ -1,0 +1,23 @@
+services:
+  ddns-updater:
+    image: alpine:latest
+    container_name: ddns-updater
+    env_file: .env
+    volumes:
+      - ./update_dns.sh:/update_dns.sh:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        apk add --no-cache curl bash
+        /bin/bash /update_dns.sh
+    restart: "no"
+
+  nginx-proxy:
+    image: nginx:alpine
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/init:/etc/nginx/conf.d:ro
+
