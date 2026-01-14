@@ -28,9 +28,17 @@ services:
       -L 0.0.0.0:${SSH_TUNNEL_TO:?}:localhost:${SSH_TUNNEL_FROM:?}
       ${SSH_USER:?}@${SSH_HOST:?}
       -p ${SSH_PORT:-22}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.1'
+          memory: 64M
+        reservations:
+          memory: 32M
     networks:
       - autossh_network
 
 networks:
   autossh_network:
+    name: autossh_network
     driver: bridge

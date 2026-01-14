@@ -12,6 +12,13 @@ services:
     ports:
       - "${PORTAINER_PORT:?}:9000"
     command: -H unix:///var/run/docker.sock
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+        reservations:
+          memory: 64M
     networks:
       - portainer_network
 
@@ -20,4 +27,5 @@ volumes:
 
 networks:
   portainer_network:
+    name: portainer_network
     driver: bridge

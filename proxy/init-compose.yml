@@ -8,6 +8,13 @@ services:
       - ./ddns/domains.txt:/app/domains.txt
     environment:
       - TZ=Europe/Samara
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+        reservations:
+          memory: 64M
 
   nginx-proxy:
     image: nginx:alpine
@@ -20,3 +27,10 @@ services:
       # Папки для SSL сертификатов
       - ./ssl/conf:/etc/letsencrypt:ro
       - ./ssl/www:/var/www/certbot:ro
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 128M
+        reservations:
+          memory: 64M

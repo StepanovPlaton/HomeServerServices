@@ -18,9 +18,17 @@ services:
       - 51413:51413 # Порт для входящих соединений (TCP)
       - 51413:51413/udp # Порт для входящих соединений (UDP)
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
     networks:
       - transmission_network
 
 networks:
   transmission_network:
+    name: transmission_network
     driver: bridge

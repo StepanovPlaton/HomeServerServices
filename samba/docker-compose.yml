@@ -20,9 +20,17 @@ services:
       -g "acl allow execute always = yes"
       -g "map archive = yes"
       -g "client max protocol = SMB3"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
     networks:
       - samba_network
 
 networks:
   samba_network:
+    name: samba_network
     driver: bridge

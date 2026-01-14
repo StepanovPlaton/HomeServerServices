@@ -9,13 +9,25 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
       # - "67:67/udp" # Раскомментируйте, если планируете использовать Pi-hole как DHCP-сервер
-      - "8080:80/tcp"  # Веб-интерфейс будет доступен на порту 8080 (чтобы не занимать 80)
+      - "8080:80/tcp" # Веб-интерфейс будет доступен на порту 8080 (чтобы не занимать 80)
     environment:
-      TZ: 'Europe/Samara' # Укажите ваш часовой пояс
-      WEBPASSWORD: '${PIHOLE_PASSWORD:?}' # Пароль для входа в админку
-      FTLCONF_LOCAL_IPV4: '${PIHOLE_IP:?}' # IP-адрес вашего хоста (сервера)
-      PIHOLE_DNS_: '${PIHOLE_DNS:?}' # Вышестоящие DNS-серверы
+      TZ: "Europe/Samara" # Укажите ваш часовой пояс
+      FTLCONF_LOCAL_IPV4: "${PIHOLE_IP:?}" # IP-адрес вашего хоста (сервера)
     volumes:
-      - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+      - "./etc-pihole:/etc/pihole"
+      - "./etc-dnsmasq.d:/etc/dnsmasq.d"
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: 128M
+        reservations:
+          memory: 64M
+    networks:
+      - pihole_network
+
+networks:
+  pihole_network:
+    name: pihole_network
+    driver: bridge

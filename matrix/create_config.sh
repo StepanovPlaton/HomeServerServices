@@ -1,5 +1,5 @@
 docker run -it --rm \
-    -v "$(pwd)/synapse_data:/data" \
-    -e SYNAPSE_SERVER_NAME=example.com \
-    -e SYNAPSE_REPORT_STATS=yes \
+    -v "$(pwd)/data:/data" \
+    -e SYNAPSE_SERVER_NAME=matrix.domain.ru \
+    -e SYNAPSE_REPORT_STATS=no \
     matrixdotorg/synapse:latest generate

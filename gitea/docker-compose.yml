@@ -19,6 +19,13 @@ services:
     #  - ${GITEA_SSH_PORT:?}:2222
     depends_on:
       - gitea-db
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 256M
     networks:
       - gitea_network
 
@@ -32,9 +39,17 @@ services:
       - POSTGRES_DB=${GITEA_DB:?}
     volumes:
       - ./db:/var/lib/postgresql/data
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 256M
     networks:
       - gitea_network
 
 networks:
   gitea_network:
+    name: gitea_network
     driver: bridge

@@ -15,9 +15,17 @@ services:
       - 22000:22000/tcp # Передача данных
       - 22000:22000/udp # Передача данных (QUIC)
       - 21027:21027/udp # Локальный поиск (Discovery)
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          memory: 128M
     networks:
       - syncthing_network
 
 networks:
   syncthing_network:
+    name: syncthing_network
     driver: bridge

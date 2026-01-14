@@ -24,9 +24,17 @@ services:
         filebrowser users add ${ADMIN_USER:?} ${ADMIN_PASSWORD:?} --perm.admin --scope "." --database /database/filebrowser.db || \
         filebrowser users update ${ADMIN_USER:?} --password ${ADMIN_PASSWORD:?} --scope "." --database /database/filebrowser.db
         filebrowser --database /database/filebrowser.db --address 0.0.0.0 --port 80 --root /srv
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 256M
     networks:
       - cloud_network
 
 networks:
   cloud_network:
+    name: cloud_network
     driver: bridge
