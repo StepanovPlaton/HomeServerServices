@@ -239,6 +239,9 @@ sudo docker compose up -d --build
 - **Syncthing** — порт `8384`:
   ![](./screenshots/syncthing.png)
 
+- **Pi-hole** — порт `8080`:
+  ![](./screenshots/pihole.png)
+
 #### Внешние сервисы запустятся на указанных в конфиге nginx поддоменах:
 
 - **Gitea**
