@@ -1,0 +1,21 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    # Для корректной работы DNS-фильтрации контейнеру нужны права администратора сети
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      # - "67:67/udp" # Раскомментируйте, если планируете использовать Pi-hole как DHCP-сервер
+      - "8080:80/tcp"  # Веб-интерфейс будет доступен на порту 8080 (чтобы не занимать 80)
+    environment:
+      TZ: 'Europe/Samara' # Укажите ваш часовой пояс
+      WEBPASSWORD: '${PIHOLE_PASSWORD:?}' # Пароль для входа в админку
+      FTLCONF_LOCAL_IPV4: '${PIHOLE_IP:?}' # IP-адрес вашего хоста (сервера)
+      PIHOLE_DNS_: '${PIHOLE_DNS:?}' # Вышестоящие DNS-серверы
+    volumes:
+      - './etc-pihole:/etc/pihole'
+      - './etc-dnsmasq.d:/etc/dnsmasq.d'
+    restart: unless-stopped

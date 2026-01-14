@@ -19,4 +19,7 @@ matrix/db
 
 cloud/filebrowser.db
 
+pihole/etc-pihole/*
+pihole/etc-dnsmasq.d/*
+
 !.keep
