@@ -1,6 +1,6 @@
 docker compose -f init-compose.yml up -d
 
-docker compose run --rm certbot certonly --webroot \
+docker compose run --rm --entrypoint "certbot" certbot certonly --webroot \
   --webroot-path=/var/www/certbot \
   --email your-email@gmail.com \
   --agree-tos \

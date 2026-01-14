@@ -19,7 +19,9 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/domain.dynnamn.ru/privkey.pem;
 
     location / {
-        return 200 "Hello world!";
+	charset utf-8;
+	default_type text/plain;
+	return 200 "Hello domain.dynnamn.ru!";
         # proxy_pass http://your_app_container:port;
         # proxy_set_header Host $host;
     }

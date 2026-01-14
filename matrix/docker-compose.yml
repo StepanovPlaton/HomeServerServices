@@ -1,0 +1,38 @@
+services:
+  matrix-synapse:
+    image: docker.io/matrixdotorg/synapse:latest
+    container_name: matrix-synapse
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+    environment:
+      - SYNAPSE_CONFIG_PATH=/data/homeserver.yaml
+    depends_on:
+      - matrix-db
+    networks:
+      - matrix_network
+
+  matrix-db:
+    image: docker.io/postgres:14-alpine
+    container_name: matrix-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${MATRIX_DB_USER:?}
+      - POSTGRES_PASSWORD=${MATRIX_DB_PASSWORD:?}
+      - POSTGRES_DB=${MATRIX_DB:?}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    networks:
+      - matrix_network
+
+  matrix-element:
+    image: vectorim/element-web:latest
+    container_name: matrix-element
+    restart: unless-stopped
+    networks:
+      - matrix_network
+
+networks:
+  matrix_network:
+    driver: bridge

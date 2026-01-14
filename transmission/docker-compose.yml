@@ -2,9 +2,6 @@ services:
   transmission:
     image: lscr.io/linuxserver/transmission:latest
     container_name: transmission
-    deploy:
-      resources:
-        limits:
     environment:
       - PUID=${OWNER_USERID:?}
       - PGID=${OWNER_GROUPID:?}

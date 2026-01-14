@@ -1,16 +1,13 @@
 services:
-  ddns-updater:
-    image: alpine:latest
-    container_name: ddns-updater
-    env_file: .env
+  ddns:
+    build: ./ddns
+    container_name: ddns
+    restart: always
+    command: ["${REGRU_LOGIN:?}", "${REGRU_PASSWORD:?}"]
     volumes:
-      - ./update_dns.sh:/update_dns.sh:ro
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        apk add --no-cache curl bash
-        /bin/bash /update_dns.sh
-    restart: "no"
+      - ./ddns/domains.txt:/app/domains.txt
+    environment:
+      - TZ=Europe/Samara
 
   nginx-proxy:
     image: nginx:alpine
@@ -20,4 +17,6 @@ services:
       - 80:80
     volumes:
       - ./nginx/init:/etc/nginx/conf.d:ro
-
+      # Папки для SSL сертификатов
+      - ./ssl/conf:/etc/letsencrypt:ro
+      - ./ssl/www:/var/www/certbot:ro

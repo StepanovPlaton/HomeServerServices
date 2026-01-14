@@ -1,0 +1,32 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: unless-stopped
+    volumes:
+      # Папка с вашими файлами (замените /path/to/your/files на реальный путь)
+      - ${SHARED_FOLDER}:/srv
+      # База данных настроек и пользователей
+      - ./filebrowser.db:/database/filebrowser.db
+      # (Опционально) Конфигурационный файл
+      # - ./settings.json:/config/settings.json
+    environment:
+      - PUID=${USER_ID:?}
+      - PGID=${GROUP_ID:?}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        if [ ! -s /database/filebrowser.db ]; then
+          filebrowser config init --database /database/filebrowser.db
+          filebrowser config set --auth.method=json --database /database/filebrowser.db
+        fi
+        filebrowser config set --root /srv --database /database/filebrowser.db
+        filebrowser users add ${ADMIN_USER:?} ${ADMIN_PASSWORD:?} --perm.admin --scope "." --database /database/filebrowser.db || \
+        filebrowser users update ${ADMIN_USER:?} --password ${ADMIN_PASSWORD:?} --scope "." --database /database/filebrowser.db
+        filebrowser --database /database/filebrowser.db --address 0.0.0.0 --port 80 --root /srv
+    networks:
+      - cloud_network
+
+networks:
+  cloud_network:
+    driver: bridge

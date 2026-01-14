@@ -1,17 +1,4 @@
 services:
-  ddns-updater:
-    image: alpine:latest
-    container_name: ddns-updater
-    env_file: .env
-    volumes:
-      - ./update_dns.sh:/update_dns.sh:ro
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        apk add --no-cache curl bash
-        /bin/bash /update_dns.sh
-    restart: "no"
-
   nginx-proxy:
     image: nginx:alpine
     container_name: nginx-proxy
@@ -26,6 +13,11 @@ services:
       - ./ssl/www:/var/www/certbot:ro
     # Подхватываем новые ssl сертификаты
     command: /bin/sh -c "while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g 'daemon off;'"
+    networks:
+      - proxy_network
+      - gitea_network
+      - cloud_network
+      - matrix_network
 
   certbot:
     image: certbot/certbot
@@ -34,4 +26,31 @@ services:
       - ./ssl/conf:/etc/letsencrypt
       - ./ssl/www:/var/www/certbot
     # Проверяет сертификаты дважды в сутки. Если осталось менее 30 дней - обновляем
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; sleep 30s & wait $${!}; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - proxy_network
+
+  ddns:
+    build: ./ddns
+    container_name: ddns
+    restart: always
+    command: ["${REGRU_LOGIN:?}", "${REGRU_PASSWORD:?}"]
+    volumes:
+      - ./ddns/domains.txt:/app/domains.txt
+    environment:
+      - TZ=Europe/Samara
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    driver: bridge
+  gitea_network:
+    external: true
+    name: gitea_gitea_network
+  cloud_network:
+    external: true
+    name: cloud_cloud_network
+  matrix_network:
+    external: true
+    name: matrix_matrix_network

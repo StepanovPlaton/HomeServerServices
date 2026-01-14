@@ -14,4 +14,9 @@ gitea/data/*
 gitea/db/*
 gitea/config/*
 
+matrix/data/*
+matrix/db
+
+cloud/filebrowser.db
+
 !.keep
