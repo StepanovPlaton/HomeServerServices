@@ -169,7 +169,7 @@ sudo docker compose up -d
 
 В разделе Settings > DNS выбираем вышестоящие DNS сервер. Включаем сверху расширенные настройки и в блоке interface settings выбираем пункт `Permit all origins`. В разделе Lists добавляем [списки доменов для блокировки](./pihole/block-lists.txt). Затем обновляем их в Tools > Update Gravity. В настройках ПК (роутера) устанавливаем в качестве DNS наш сервер.
 
-### 10. Nginx Reverse Proxy (Entrypoint)
+### 11. Nginx Reverse Proxy (Entrypoint)
 
 ```bash
 cd proxy
