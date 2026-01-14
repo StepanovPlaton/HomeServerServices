@@ -8,6 +8,7 @@ transmission/config/*
 proxy/nginx/conf.d/default.conf
 proxy/ssl/conf/*
 proxy/ssl/www/*
+proxy/ddns/domains.txt
 
 gitea/data/*
 gitea/db
