@@ -2,7 +2,10 @@
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name domain.ru www.domain.ru git.domain.ru disk.domain.ru matrix.domain.ru chat.domain.ru;
+    server_name domain.ru www.domain.ru git.domain.ru cloud.domain.ru m.domain.ru chat.domain.ru;
+
+    access_log /var/log/nginx/http_access.log main;
+    error_log /var/log/nginx/http_error.log;
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -23,6 +26,9 @@ server {
     ssl_certificate /etc/letsencrypt/live/domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/domain.ru/privkey.pem;
 
+    access_log /var/log/nginx/root_access.log main;
+    error_log /var/log/nginx/root_error.log;
+
     location / {
         charset utf-8;
         default_type text/plain;
@@ -38,6 +44,9 @@ server {
     ssl_certificate /etc/letsencrypt/live/git.domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/git.domain.ru/privkey.pem;
 
+    access_log /var/log/nginx/git_access.log main;
+    error_log /var/log/nginx/git_error.log;
+
     location / {
         proxy_pass http://gitea:3000;
         proxy_set_header Host $host;
@@ -50,10 +59,13 @@ server {
 # 4. Cloud
 server {
     listen 443 ssl;
-    server_name disk.domain.ru;
+    server_name cloud.domain.ru;
 
-    ssl_certificate /etc/letsencrypt/live/disk.domain.ru/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/disk.domain.ru/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/cloud.domain.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/cloud.domain.ru/privkey.pem;
+
+    access_log /var/log/nginx/cloud_access.log main;
+    error_log /var/log/nginx/cloud_error.log;
 
     client_max_body_size 0;
 
@@ -69,10 +81,13 @@ server {
 # 4. Matrix
 server {
     listen 443 ssl;
-    server_name matrix.domain.ru;
+    server_name m.domain.ru;
 
-    ssl_certificate /etc/letsencrypt/live/matrix.domain.ru/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/matrix.domain.ru/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/m.domain.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/m.domain.ru/privkey.pem;
+
+    access_log /var/log/nginx/matrix_synapse_access.log main;
+    error_log /var/log/nginx/matrix_synapse_error.log;
 
     location / {
         proxy_pass http://matrix-synapse:8008;
@@ -101,6 +116,9 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/chat.domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/chat.domain.ru/privkey.pem;
+
+    access_log /var/log/nginx/matrix_element_access.log main;
+    error_log /var/log/nginx/matrix_element_error.log;
 
     location / {
         proxy_pass http://matrix-element;

@@ -6,9 +6,14 @@ syncthing/config/*
 transmission/config/*
 
 proxy/nginx/conf.d/default.conf
+proxy/nginx/logs/*
 proxy/ssl/conf/*
 proxy/ssl/www/*
 proxy/ddns/domains.txt
+proxy/crowdsec/*
+!proxy/crowdsec/config
+proxy/crowdsec/config/*
+!proxy/crowdsec/config/acquis.yaml
 
 gitea/data/*
 gitea/db
