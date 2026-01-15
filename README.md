@@ -149,7 +149,21 @@ cd matrix
 cp .env.example .env && vim .env
 ```
 
-Создаём конфиг [по примеру](./matrix/create_config.sh):
+Создаём конфиг [по примеру](./matrix/create_config.sh). Меняем базу данных на PostgreSQL:
+
+```yaml
+database:
+  name: psycopg2
+  args:
+    user: user
+    password: passw0rd
+    database: db
+    host: matrix-db
+    cp_min: 5
+    cp_max: 10
+```
+
+Запускаем:
 
 ```bash
 sudo docker compose up -d
@@ -224,6 +238,9 @@ sudo docker compose up -d --build
 
 - **Syncthing** — порт `8384`:
   ![](./screenshots/syncthing.png)
+
+- **Pi-hole** — порт `8080`:
+  ![](./screenshots/pihole.png)
 
 #### Внешние сервисы запустятся на указанных в конфиге nginx поддоменах:
 
