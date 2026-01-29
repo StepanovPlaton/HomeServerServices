@@ -41,9 +41,11 @@ services:
       - matrix_network
 
   matrix-element:
-    image: vectorim/element-web:latest
+    image: docker.io/vectorim/element-web:latest
     container_name: matrix-element
     restart: unless-stopped
+    environment:
+      - ELEMENT_WEB_PORT=${MATRIX_ELEMENT_PORT:?}
     deploy:
       resources:
         limits:
@@ -53,6 +55,23 @@ services:
           memory: 128M
     networks:
       - matrix_network
+
+  synapse-admin:
+    container_name: synapse-admin
+    hostname: synapse-admin
+    image: docker.io/awesometechnologies/synapse-admin:latest
+    ports:
+      - "8009:80"
+    restart: always
+    networks:
+      - matrix_network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 256M
+        reservations:
+          memory: 128M
 
 networks:
   matrix_network:

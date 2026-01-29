@@ -1,8 +1,8 @@
 services:
   filebrowser:
-    image: filebrowser/filebrowser:latest
+    image: docker.io/filebrowser/filebrowser:latest
     container_name: filebrowser
-    restart: unless-stopped
+    restart: always
     volumes:
       # Папка с вашими файлами (замените /path/to/your/files на реальный путь)
       - ${SHARED_FOLDER}:/srv
@@ -23,7 +23,7 @@ services:
         filebrowser config set --root /srv --database /database/filebrowser.db
         filebrowser users add ${ADMIN_USER:?} ${ADMIN_PASSWORD:?} --perm.admin --scope "." --database /database/filebrowser.db || \
         filebrowser users update ${ADMIN_USER:?} --password ${ADMIN_PASSWORD:?} --scope "." --database /database/filebrowser.db
-        filebrowser --database /database/filebrowser.db --address 0.0.0.0 --port 80 --root /srv
+        filebrowser --database /database/filebrowser.db --address 0.0.0.0 --port 8080 --root /srv
     deploy:
       resources:
         limits:

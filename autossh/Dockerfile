@@ -1,4 +1,4 @@
-FROM jnovack/autossh:2.1.0
+FROM docker.io/jnovack/autossh:2.1.0
 
 # Устанавливаем sshpass для работы с паролями
 RUN apk add --no-cache sshpass

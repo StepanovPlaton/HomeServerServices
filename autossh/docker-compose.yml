@@ -2,7 +2,7 @@ services:
   autossh:
     build: .
     container_name: autossh
-    restart: unless-stopped
+    restart: always
     ports:
       - "${SSH_TUNNEL_TO:?}:${SSH_TUNNEL_TO:?}"
 

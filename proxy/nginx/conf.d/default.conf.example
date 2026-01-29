@@ -4,9 +4,6 @@ server {
     listen [::]:80 default_server;
     server_name domain.ru www.domain.ru git.domain.ru cloud.domain.ru m.domain.ru chat.domain.ru;
 
-    access_log /var/log/nginx/http_access.log main;
-    error_log /var/log/nginx/http_error.log;
-
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
     }
@@ -26,9 +23,6 @@ server {
     ssl_certificate /etc/letsencrypt/live/domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/domain.ru/privkey.pem;
 
-    access_log /var/log/nginx/root_access.log main;
-    error_log /var/log/nginx/root_error.log;
-
     location / {
         charset utf-8;
         default_type text/plain;
@@ -43,9 +37,6 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/git.domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/git.domain.ru/privkey.pem;
-
-    access_log /var/log/nginx/git_access.log main;
-    error_log /var/log/nginx/git_error.log;
 
     location / {
         proxy_pass http://gitea:3000;
@@ -64,13 +55,10 @@ server {
     ssl_certificate /etc/letsencrypt/live/cloud.domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/cloud.domain.ru/privkey.pem;
 
-    access_log /var/log/nginx/cloud_access.log main;
-    error_log /var/log/nginx/cloud_error.log;
-
     client_max_body_size 0;
 
     location / {
-        proxy_pass http://filebrowser;
+        proxy_pass http://filebrowser:8080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -86,9 +74,6 @@ server {
     ssl_certificate /etc/letsencrypt/live/m.domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/m.domain.ru/privkey.pem;
 
-    access_log /var/log/nginx/matrix_synapse_access.log main;
-    error_log /var/log/nginx/matrix_synapse_error.log;
-
     location / {
         proxy_pass http://matrix-synapse:8008;
         proxy_set_header Host $host;
@@ -98,17 +83,6 @@ server {
 
         client_max_body_size 50M;
     }
-
-    #location /.well-known/matrix/server {
-    #    return 200 '{"m.server": "matrix.domain.ru:443"}';
-    #    add_header Content-Type application/json;
-    #}
-
-    #location /.well-known/matrix/client {
-    #    return 200 '{"m.homeserver": {"base_url": "https://matrix.domain.ru"}}';
-    #    add_header Content-Type application/json;
-    #    add_header Access-Control-Allow-Origin *;
-    #}
 }
 server {
     listen 443 ssl;
@@ -117,11 +91,8 @@ server {
     ssl_certificate /etc/letsencrypt/live/chat.domain.ru/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/chat.domain.ru/privkey.pem;
 
-    access_log /var/log/nginx/matrix_element_access.log main;
-    error_log /var/log/nginx/matrix_element_error.log;
-
     location / {
-        proxy_pass http://matrix-element;
+        proxy_pass http://matrix-element:8083;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

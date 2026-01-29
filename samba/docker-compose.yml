@@ -1,11 +1,11 @@
 services:
   samba:
-    image: dperson/samba
+    image: docker.io/dperson/samba
     container_name: samba
-    restart: unless-stopped
+    restart: always
     ports:
-      - "139:139"
-      - "445:445"
+      - "1139:139"
+      - "1445:445"
     volumes:
       - ${SHARED_FOLDER:?}:/mnt/shared
     environment:
