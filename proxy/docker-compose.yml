@@ -1,18 +1,16 @@
 services:
   nginx-proxy:
-    image: nginx:alpine
+    image: docker.io/nginx:alpine
     container_name: nginx-proxy
     restart: always
     ports:
-      - 80:80
-      - 443:443
+      - 8080:80
+      - 8443:443
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       # Папки для SSL сертификатов
       - ./ssl/conf:/etc/letsencrypt:ro
       - ./ssl/www:/var/www/certbot:ro
-      # Логи для канали CrowdSec
-      - ./nginx/logs:/var/log/nginx
     # Подхватываем новые ssl сертификаты
     command: /bin/sh -c "while :; do sleep 24h & wait $${!}; nginx -s reload; done & nginx -g 'daemon off;'"
     deploy:
@@ -28,43 +26,10 @@ services:
       - cloud_network
       - matrix_network
 
-  crowdsec:
-    image: crowdsecurity/crowdsec:latest
-    container_name: crowdsec
-    restart: always
-    environment:
-      # Какие коллекции правил установить сразу
-      COLLECTIONS: "crowdsecurity/nginx crowdsecurity/http-cve crowdsecurity/whitelist-good-actors"
-      # Чтобы не захламлять вывод, можно включить только ошибки
-      # LEVEL_TRACE: "false"
-    volumes:
-      # Читаем логи Nginx
-      - ./nginx/logs:/var/log/nginx:ro
-      # Конфигурация и база данных
-      - ./crowdsec/config:/etc/crowdsec
-      - ./crowdsec/data:/var/lib/crowdsec/data
-    ports:
-      - 8081:8080
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
-
-  dashboard:
-    image: crowdsecurity/dashboard
-    container_name: crowdsec-dashboard
-    restart: always
-    environment:
-      - MB_DB_FILE=/data/metabase.db
-    volumes:
-      - ./crowdsec/data:/data
-    ports:
-      - 3001:3000
-
   certbot:
-    image: certbot/certbot
+    image: docker.io/certbot/certbot
     container_name: certbot
+    restart: always
     volumes:
       - ./ssl/conf:/etc/letsencrypt
       - ./ssl/www:/var/www/certbot

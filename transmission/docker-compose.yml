@@ -1,6 +1,6 @@
 services:
   transmission:
-    image: lscr.io/linuxserver/transmission:latest
+    image: docker.io/linuxserver/transmission:latest
     container_name: transmission
     environment:
       - PUID=${OWNER_USERID:?}
@@ -17,7 +17,7 @@ services:
       - ${TRANSMISSION_WEB_UI_PORT:?}:9091 # Веб-интерфейс
       - 51413:51413 # Порт для входящих соединений (TCP)
       - 51413:51413/udp # Порт для входящих соединений (UDP)
-    restart: unless-stopped
+    restart: always
     deploy:
       resources:
         limits:

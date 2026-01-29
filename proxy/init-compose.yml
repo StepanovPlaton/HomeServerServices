@@ -17,11 +17,11 @@ services:
           memory: 64M
 
   nginx-proxy:
-    image: nginx:alpine
+    image: docker.io/nginx:alpine
     container_name: nginx-proxy
     restart: always
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ./nginx/init:/etc/nginx/conf.d:ro
       # Папки для SSL сертификатов
