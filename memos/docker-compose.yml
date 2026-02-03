@@ -1,0 +1,16 @@
+services:
+  memos:
+    image: docker.io/neosmemo/memos:stable
+    container_name: memos
+    restart: always
+    volumes:
+      - ./memos:/var/opt/memos
+    environment:
+      - MEMOS_INSTANCE_URL=${MEMOS_URL:?}
+    networks:
+      - memos_network
+
+networks:
+  memos_network:
+    name: memos_network
+    driver: bridge

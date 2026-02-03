@@ -1,0 +1,18 @@
+services:
+  homepage:
+    container_name: homepage
+    restart: always
+    build:
+      context: src
+      args:
+        - OAUTH_GITHUB_CLIENT_ID=${OAUTH_GITHUB_CLIENT_ID:?}
+        - OAUTH_GITHUB_CLIENT_SECRET=${OAUTH_GITHUB_CLIENT_SECRET:?}
+    environment:
+      - NODE_ENV=production
+    networks:
+      - homepage_network
+
+networks:
+  homepage_network:
+    driver: bridge
+    name: homepage_network

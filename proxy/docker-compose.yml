@@ -25,6 +25,8 @@ services:
       - gitea_network
       - cloud_network
       - matrix_network
+      - memos_network
+      - homepage_network
 
   certbot:
     image: docker.io/certbot/certbot
@@ -77,3 +79,9 @@ networks:
   matrix_network:
     external: true
     name: matrix_network
+  memos_network:
+    external: true
+    name: memos_network
+  homepage_network:
+    external: true
+    name: homepage_network
