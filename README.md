@@ -1,253 +1,111 @@
-# Home Server Services
+# 🏠 Home Server Services
 
-> **Home Server Services** - это полный набор сервисов в Docker для организации домашнего сервера!
+> **Home Server Services** — это гайд по настройке и полный набор сервисов в Docker для организации домашнего роутера/сервера!
 >
-> Главное - это **модульность** и **воспроизводимая установка**. Можно развернуть за 15 минут!
+> Главное — это **модульность** и **воспроизводимая установка**.
 
-![](./screenshots/grafana.jpg)
-![](./screenshots/portainer.jpg)
+![Grafana Dashboard](./screenshots/grafana.jpg)
+![Portainer Interface](./screenshots/portainer.jpg)
 
-## Мой сервер:
+---
 
-- CheckWay POS88
+## 📋 Мой сервер
+
+- **CheckWay Sherman Micro**
   - [Intel Celeron J1900](https://technical.city/ru/cpu/Core-2-Duo-E8400-protiv-Celeron-J1900) @ 1.99GHz (64 bit)
-  - 4Gb RAM
-  - 120Gb SSD
-  - Не греется, не шумит, мало потребляет
-- Debian 13 (Trixie) Minimal
-  - [Docker](https://www.docker.com/)
-  - [Docker Compose](https://docs.docker.com/compose/)
-  - Политика частоты работы CPU - `ondemand`
+  - 8GB RAM
+  - 120GB SSD
+  - 2x 1Gbps (WAN+LAN)
+- **Proxmox VE 9.1.4**
+  - **OPNsense 25.7**
+    - [CrowdSec](https://www.crowdsec.net)
+    - [AdGuard Home](https://github.com/AdguardTeam/AdGuardHome)
+  - **Debian 13 (Trixie) Minimal**
+    - [Podman](https://podman.io)
 
-## Сервисы:
+---
 
-- [Portainer](./portainer/) - Управление контейнерами
-- [Grafana](./grafana/) - Загруженность сервера
-  - [Prometheus](./grafana/prometheus.yml)
-  - [Node Exporter](./grafana/)
-- [Proxy](./proxy/) - Reverse proxy
-  - [Nginx](./proxy/nginx/)
-  - [DDNS](./proxy/ddns/) - Автоматическое обновление DNS записей у регистратора [рег.ру](https://www.reg.ru)
-  - Let's Encrypt - Автоматическое обновление SSL сертификатов на все домены
-- [Samba](./samba/) - Сетевой диск
-- [Syncthing](./syncthing/) - Синхронизация данных между устройствами
-- [Transmission](./transmission/) - BitTorrent клиент
-- [AutoSSH](./autossh/) - SSH тунель
-- [Gitea](./gitea/) - Git-сервер
-- [Cloud](./cloud/) - FileBrowser - веб-интерфейс для управления файлами
-- [Matrix](./matrix/) - сервер Matrix
-  - [Synapse](./matrix/create_config.sh) - Matrix сервер Synapse
-  - [Element](./matrix/docker-compose.yml) - Matrix веб-клиент Element
-- [Pi-hole](./pihole/) - DNS фильтр (блокировка рекламы, слежки, защита от атак)
-
-## О проекте:
+## 🚀 О проекте
 
 - **Полнофункциональный домашний сервер**
-- **Все сервисы настроены через Docker Compose** для легкого управления и быстрого запуска
-- **Мониторинг системы через Grafana** с готовыми дашбордами
+- Две одновременно запущенные операционные системы в гипервизоре Proxmox
+  - OPNsense выполняет функции роутера, DHCP и NTP сервера, защищает домашнюю сеть от вторжений с CrowSec
+  - В Debian в Podman запущены контейнеры с сервисами
+- **Все сервисы настроены через Docker Compose** (совместим с Podman) для легкого управления и быстрого запуска
+- **Мониторинг системы через Grafana** с готовым дашбордом
 - **Файловый сервер Samba** для доступа к файлам по сети
   - Открытый диск только на чтение
   - Доступ на запись только после авторизации
 - **Синхронизация файлов** между устройствами через **Syncthing**
-  - Постоянная точка синхронизации позволяет обмениваться файлами между устройствами, даже если они не бывают одновременно в сети - домашний сервер выступает посредником
+  - Постоянная точка синхронизации позволяет обмениваться файлами между устройствами, даже если они не бывают одновременно в сети — домашний сервер выступает посредником
 - **BitTorrent клиент Transmission** с веб-интерфейсом
 - **SSH туннелирование через AutoSSH**
   - Можно пробросить порт на удалённый VPS, автоматически переподключается при потере соединения
 - **Nginx reverse proxy** для маршрутизации трафика к сервисам
   - Автоматическое получение и обновление SSL сертификатов через Let's Encrypt
   - Автоматическое обновление DNS записей у регистратора [рег.ру](https://www.reg.ru)
-- **Git-сервер Gitea** для хостинга собственных репозиториев
-- **FileBrowser** - веб-интерфейс для управления файлами через браузер
-- **Matrix Synapse** - собственный сервер для мессенджера Matrix с веб-клиентом Element
-- Блокировка рекламы, нежелательной слежки, частичная защита от атак с помощью **Pi-hole**
-- Управление Docker через **Portainer с веб-интерфейсом**
-- Скрипт для снижения энергопотребления
-- Все **сервисы используют переменные окружения** для гибкой настройки и примеры конфигураций
-- Автоматический перезапуск контейнеров при сбоях
+- **Git-сервер Gitea** для хостинга репозиториев
+- **FileBrowser** — веб-интерфейс для управления файлами через браузер
+- **Matrix Synapse** — собственный сервер для мессенджера Matrix с веб-клиентом Element
+- Блокировка рекламы, нежелательной слежки, частичная защита от атак с помощью **AdGuard Home**
+- Управление контейнерами через **Portainer**
+- Все **сервисы используют переменные окружения** для гибкой настройки и примеры конфигурации
 
-## Подготовка:
+---
 
-- Купить белый IP адрес у провайдера
-- В настройках роутера пробросить 80 и 443 порт на сервер
-- Купить домен второго уровня у регистратора [рег.ру](https://www.reg.ru)
-- [В настройках API рег.ру](https://www.reg.ru/user/account/settings/api/) добавить CIDR вашего провайдера (чтобы при смене IP наш скрипт смог обновить DNS записи)
-- В настройках DNS-серверов зоны указать бесплатные DNS-серверы рег.ру: `ns1.reg.ru`, `ns2.reg.ru`
+## 📝 Подготовка
 
-## Запуск:
+Перед началом установки необходимо выполнить следующие шаги:
 
-### 1. Portainer
+1. **Купить белый IP адрес** у провайдера
+2. **Купить домен второго уровня** у регистратора [рег.ру](https://www.reg.ru)
+3. [В настройках API рег.ру](https://www.reg.ru/user/account/settings/api/) добавить CIDR вашего провайдера (чтобы при смене IP наш скрипт смог обновить DNS записи)
+4. В настройках DNS-серверов зоны указать бесплатные DNS-серверы рег.ру: `ns1.reg.ru`, `ns2.reg.ru`
 
-```bash
-cd portainer
-cp .env.example .env && vim .env
-sudo docker compose up -d
-```
+> После выполнения этих шагов можно переходить к настройке сервера. **[Первым шагом установим гипервизор Proxmox](./Proxmox.md)**. Вы также можете установить [Debian с сервисами отдельно, если у вас уже настроен роутер](./Debian.md)
 
-### 2. Grafana
+---
 
-```bash
-cd grafana
-cp .env.example .env && vim .env
-sudo docker compose up -d
-```
+## 🎯 Использование
 
-### 3. AutoSSH
+### Внутренние сервисы
 
-```bash
-cd autossh
-cp .env.example .env && vim .env
-sudo docker compose up -d --build
-```
+После настройки и запуска внутренние сервисы доступны (по умолчанию) по следующим портам:
 
-### 4. Samba
+#### Grafana — порт `3000`
 
-```bash
-cd samba
-cp .env.example .env && vim .env
-sudo docker compose up -d
-```
+![Grafana Dashboard](./screenshots/grafana.jpg)
 
-### 5. Transmission
+#### Portainer — порт `9000`
 
-```bash
-cd transmission
-cp .env.example .env && vim .env
-sudo docker compose up -d
-```
+![Portainer Interface](./screenshots/portainer.jpg)
 
-### 6. Syncthing
+#### Transmission — порт `9091`
 
-```bash
-cd syncthing
-cp .env.example .env && vim .env
-sudo docker compose up -d
-```
+![Transmission Interface](./screenshots/transmission.png)
 
-### 7. Gitea
+#### Syncthing — порт `8384`
 
-```bash
-cd gitea
-cp .env.example .env && vim .env
-sudo docker compose up -d
-```
+![Syncthing Interface](./screenshots/syncthing.png)
 
-> **Примечание:** Конфигурируется позже, уже в веб-форме.
+#### Matrix Admin — порт `8009`
 
-### 8. Cloud (FileBrowser)
+![Matrix Admin Interface](./screenshots/synapse-admin.png)
 
-```bash
-cd cloud
-cp .env.example .env && vim .env
-touch filebrowser.db
-sudo docker compose up -d
-```
+### Внешние сервисы
 
-### 9. Matrix
+Внешние сервисы запустятся на указанных в конфиге nginx поддоменах:
 
-```bash
-cd matrix
-cp .env.example .env && vim .env
-```
+#### Gitea
 
-Создаём конфиг [по примеру](./matrix/create_config.sh). Меняем базу данных на PostgreSQL:
+![Gitea Interface](./screenshots/gitea.png)
 
-```yaml
-database:
-  name: psycopg2
-  args:
-    user: user
-    password: passw0rd
-    database: db
-    host: matrix-db
-    cp_min: 5
-    cp_max: 10
-```
+#### Synapse и Element
 
-Запускаем:
+| Synapse | Element |
+|---------|---------|
+| ![Synapse Interface](./screenshots/synapse.png) | ![Element Interface](./screenshots/element.png) |
 
-```bash
-sudo docker compose up -d
-```
+#### FileBrowser
 
-Создаём пользователя [по примеру](./matrix/create_user.sh).
-
-### 10. Pi-hole
-
-```bash
-cd pihole
-cp .env.example .env && vim .env
-sudo docker compose up -d
-```
-
-[Устанавливаем пароль](./pihole/set-password.sh) (оставить пустым для доступа без пароля)
-
-В разделе Settings > DNS выбираем вышестоящие DNS сервер. Включаем сверху расширенные настройки и в блоке interface settings выбираем пункт `Permit all origins`. В разделе Lists добавляем [списки доменов для блокировки](./pihole/block-lists.txt). Затем обновляем их в Tools > Update Gravity. В настройках ПК (роутера) устанавливаем в качестве DNS наш сервер.
-
-### 11. Nginx Reverse Proxy (Entrypoint)
-
-```bash
-cd proxy
-cp .env.example .env && vim .env
-```
-
-Создаём конфиг для DynDNS:
-
-```bash
-cp ddns/domains.txt.example ddns/domains.txt && vim ddns/domains.txt
-```
-
-Нужно указать ресурсные записи `@` и `www` для доступа к домену второго уровня напрямую. Также нужно добавить домены 3-го уровня для: gitea, cloud (filebrowser), matrix server (synapse), matrix client (element).
-
-В первый раз SSL сертификаты нужно создать вручную.
-
-Запускаем DDNS скрипт и HTTP сервер для Let's Encrypt:
-
-```bash
-sudo docker compose -f init-compose.yml up -d --build
-```
-
-Проверяем по логам в portainer и в личном кабинете рег.ру что ресурсные записи обновились. Ожидаем пока DNS обновит информацию о наших поддоменах (занимает от 15 минут до 24 часов). Затем создаём SSL сертификаты на каждый домен(-ы) [по примеру](./proxy/create-first-cert-example.sh).
-
-Настраиваем Nginx:
-
-```bash
-cd nginx/conf.d
-cp default.conf.example default.conf
-vim default.conf
-```
-
-Запускаем основной контейнер:
-
-```bash
-sudo docker compose -f init-compose.yml down
-sudo docker compose up -d --build
-```
-
-## Использование:
-
-#### После настройки и запуска внутренние сервисы доступны (по умолчанию) по следующим портам:
-
-- **Grafana** — порт `3000`:
-  ![](./screenshots/grafana.jpg)
-
-- **Portainer** — порт `9000`:
-  ![](./screenshots/portainer.jpg)
-
-- **Transmission** — порт `9091`:
-  ![](./screenshots/transmission.png)
-
-- **Syncthing** — порт `8384`:
-  ![](./screenshots/syncthing.png)
-
-- **Pi-hole** — порт `8080`:
-  ![](./screenshots/pihole.png)
-
-#### Внешние сервисы запустятся на указанных в конфиге nginx поддоменах:
-
-- **Gitea**
-  ![](./screenshots/gitea.png)
-- **Synapse и Element**
-  |![](./screenshots/synapse.png)|![](./screenshots/element.png)|
-  |-|-|
-- **FileBrowser**
-  ![](./screenshots/cloud.png)
+![FileBrowser Interface](./screenshots/cloud.png)
