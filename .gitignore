@@ -10,10 +10,6 @@ proxy/nginx/logs/*
 proxy/ssl/conf/*
 proxy/ssl/www/*
 proxy/ddns/domains.txt
-proxy/crowdsec/*
-!proxy/crowdsec/config
-proxy/crowdsec/config/*
-!proxy/crowdsec/config/acquis.yaml
 
 gitea/data/*
 gitea/db
@@ -24,8 +20,7 @@ matrix/db
 
 cloud/filebrowser.db
 
-pihole/etc-pihole/*
-pihole/etc-dnsmasq.d/*
+memos
 
 memos/memos/*.db
 memos/memos/*.db-wal
