@@ -27,4 +27,8 @@ cloud/filebrowser.db
 pihole/etc-pihole/*
 pihole/etc-dnsmasq.d/*
 
+memos/memos/*.db
+memos/memos/*.db-wal
+memos/memos/*.db-shm
+
 !.keep
