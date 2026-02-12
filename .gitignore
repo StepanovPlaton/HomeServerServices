@@ -20,8 +20,6 @@ matrix/db
 
 cloud/filebrowser.db
 
-memos
-
 memos/memos/*.db
 memos/memos/*.db-wal
 memos/memos/*.db-shm
