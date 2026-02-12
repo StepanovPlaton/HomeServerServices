@@ -74,7 +74,77 @@ server {
     }
 }
 
-# 4. Matrix
+# 5. Cloud
+server {
+    listen 443 ssl;
+    server_name cloud.stepanovplaton.ru;
+
+    ssl_certificate /etc/letsencrypt/live/cloud.stepanovplaton.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/cloud.stepanovplaton.ru/privkey.pem;
+
+    client_max_body_size 0;
+
+    location / {
+        proxy_pass http://nextcloud;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+server {
+    listen 443 ssl;
+    server_name office.stepanovplaton.ru;
+
+    ssl_certificate /etc/letsencrypt/live/office.stepanovplaton.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/office.stepanovplaton.ru/privkey.pem;
+
+    location ^~ /browser {
+        proxy_pass http://nextcloud-collabora:9980;
+        proxy_set_header Host $host;
+    }
+    location ^~ /hosting/discovery {
+        proxy_pass http://nextcloud-collabora:9980;
+        proxy_set_header Host $host;
+    }
+    location ^~ /hosting/capabilities {
+        proxy_pass http://nextcloud-collabora:9980;
+        proxy_set_header Host $host;
+    }
+    location ~ ^/cool/(.*)/ws$ {
+        proxy_pass http://nextcloud-collabora:9980;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade"; # Явно указываем Upgrade
+        proxy_set_header Host $host;
+        proxy_read_timeout 36000s;
+    }
+    location ^~ /cool/adminws {
+        proxy_pass http://nextcloud-collabora:9980;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "Upgrade";
+        proxy_set_header Host $host;
+        proxy_read_timeout 36000s;
+    }
+    location / {
+        proxy_pass http://nextcloud-collabora:9980;
+        proxy_set_header Host $host;
+    }
+}
+server {
+    listen 443 ssl;
+    server_name talk.stepanovplaton.ru;
+
+    ssl_certificate /etc/letsencrypt/live/talk.stepanovplaton.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/talk.stepanovplaton.ru/privkey.pem;
+
+    location / {
+        return 200 "Nextcloud Talk TURN server not configured";
+        add_header Content-Type text/plain;
+    }
+}
+
+
+# 6. Matrix
 server {
     listen 443 ssl;
     server_name m.domain.ru;
@@ -110,7 +180,7 @@ server {
     }
 }
 
-# Memos
+# 7. Memos
 server {
     listen 443 ssl;
     server_name todo.domain.ru;

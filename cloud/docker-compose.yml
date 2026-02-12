@@ -29,19 +29,35 @@ services:
       - ${PATH_TO_FOLDER:?}:/var/www/external_storage:z
       - ./data:/var/www/html/data:z
       - ./config:/var/www/html/config:z
-    environment:
-      - MYSQL_PASSWORD=${DATABASE_PASSWORD:?}
-      - MYSQL_DATABASE=${NEXTCLOUD_DATABASE:?}
-      - MYSQL_USER=${DATABASE_USER:?}
-      - MYSQL_HOST=nextcloud-db
-      - REDIS_HOST=nextcloud-redis
-
-      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN:?}
-      - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_PASSWORD:?}
-      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_DOMAIN:?}
+      - ./apps:/var/www/html/custom_apps:z
+    #environment:
+    #  - MYSQL_PASSWORD=${DATABASE_PASSWORD:?}
+    #  - MYSQL_DATABASE=${NEXTCLOUD_DATABASE:?}
+    #  - MYSQL_USER=${DATABASE_USER:?}
+    #  - MYSQL_HOST=nextcloud-db
+    #  - REDIS_HOST=nextcloud-redis
+    #
+    #  - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN:?}
+    #  - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_PASSWORD:?}
+    #  - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_DOMAIN:?}
     depends_on:
       - nextcloud-db
       - nextcloud-redis
+    networks:
+      - cloud_network
+      - private_cloud_network
+
+  nextcloud-collabora:
+    image: docker.io/collabora/code:latest
+    container_name: nextcloud-collabora
+    restart: always
+    environment:
+      - aliasgroup1=https://${NEXTCLOUD_DOMAIN:?}
+      - DONT_GEN_SSL_CERT=true
+      - server_name=${COLLABORA_DOMAIN:?}
+      - extra_params=--o:ssl.enable=false --o:ssl.termination=true --o:net.post_allow.host[0]=.*
+      - username=${COLLABORA_ADMIN:?}
+      - password=${COLLABORA_PASSWORD:?}
     networks:
       - cloud_network
       - private_cloud_network

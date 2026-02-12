@@ -21,6 +21,7 @@ matrix/db
 cloud/db
 cloud/data
 cloud/config
+cloud/apps
 
 disk/filebrowser.db
 
