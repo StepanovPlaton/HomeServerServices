@@ -99,10 +99,10 @@ podman-compose up -d
 
 ---
 
-## 8️⃣ Cloud (FileBrowser) — веб-интерфейс для управления файлами
+## 8️⃣ FileBrowser — простой веб-интерфейс для управления файлами
 
 ```bash
-cd cloud
+cd disk
 cp .env.example .env && vim .env
 touch filebrowser.db && podman unshare chown -R 1000:1000 filebrowser.db
 podman-compose up -d
@@ -110,7 +110,19 @@ podman-compose up -d
 
 ---
 
-## 9️⃣ Matrix — собственный сервер для мессенджера Matrix
+## 9️⃣ Memos — быстрые заметки
+
+> Memos — это простой и быстрый способ создавать и управлять заметками через веб-интерфейс.
+
+```bash
+cd memos
+cp .env.example .env && vim .env
+podman-compose up -d
+```
+
+---
+
+## 🔟 Matrix — собственный сервер для мессенджера Matrix
 
 ```bash
 cd matrix
@@ -147,7 +159,54 @@ podman exec -it matrix-synapse register_new_matrix_user -c /data/homeserver.yaml
 
 ---
 
-## 🔟 Nginx Reverse Proxy (Entrypoint)
+## 1️⃣1️⃣ NextCloud — личное многофункциональное облако
+
+> NextCloud — полнофункциональное облачное хранилище с возможностью синхронизации файлов, календарем, контактами, задачами и многими другими функциями.
+
+```bash
+cd cloud
+cp .env.example .env && vim .env
+mkdir db
+mkdir config && podman unshare chown -R 33:33 config
+mkdir data && podman unshare chown -R 33:33 data
+mkdir apps && podman unshare chown -R 33:33 apps
+podman-compose up -d
+```
+
+> ⚠️ В docker-compose.yml есть переменные, которые можно указать при первом запуске, но они мешают если пересоздавать контейнер не с нуля.
+
+Настраиваем NextCloud через веб-форму после запуска Nginx. Выбираем пользователя по умолчанию, БД. В разделе приложений можем установить дополнительные модули:
+
+**Базовые модули:**
+- Calendar — календарь
+- Contacts — контакты
+- Deck — доски задач
+- Whiteboard — виртуальная доска
+- Forms — формы
+
+**Комплексные модули:**
+- **NextCloud Office** — конфигурируется с Collabora Office, которая запускается на отдельном домене, его нужно указать в настройках
+- **NextCloud Talk** — видеоконференции. Для доступа извне сети нужен модуль CoTurn, он запускается на отдельном домене
+  > ⚠️ Для этого модуля нужно открыть UDP порты с SSL, что проблематично. Это я пока не настраивал
+
+> Для работы NextCloud Office в `config/config.php` нужно добавить:
+> ```php
+> 'trusted_proxies' => ['10.89.0.1'],
+> 'overwrite.cli.url' => 'https://cloud.domain.ru',
+> 'overwriteprotocol' => 'https',
+> 'overwritehost' => 'cloud.domain.ru',
+> ```
+> 
+> `10.89.0.1` — это Gateway для Podman  
+> `cloud.domain.ru` меняем на наш домен
+
+**Настройка внешнего хранилища:**
+
+Также устанавливаем модуль **External Storage Support** и в его настройках добавляем диск локального типа по пути `/var/www/external_storage` (это внешний диск, указанный в `.env`).
+
+---
+
+## 1️⃣2️⃣ Nginx Reverse Proxy (Entrypoint)
 
 ```bash
 cd proxy
