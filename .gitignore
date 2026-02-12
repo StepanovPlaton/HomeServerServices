@@ -22,6 +22,8 @@ cloud/db
 cloud/data
 cloud/config
 
-memos
+memos/memos/*.db
+memos/memos/*.db-wal
+memos/memos/*.db-shm
 
 !.keep
