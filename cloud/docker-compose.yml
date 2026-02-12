@@ -1,40 +1,55 @@
 services:
-  filebrowser:
-    image: docker.io/filebrowser/filebrowser:latest
-    container_name: filebrowser
+  nextcloud-db:
+    image: docker.io/library/mariadb:11
     restart: always
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    container_name: nextcloud-db
     volumes:
-      # Папка с вашими файлами (замените /path/to/your/files на реальный путь)
-      - ${SHARED_FOLDER}:/srv
-      # База данных настроек и пользователей
-      - ./filebrowser.db:/database/filebrowser.db
-      # (Опционально) Конфигурационный файл
-      # - ./settings.json:/config/settings.json
+      - ./db:/var/lib/mysql:z
     environment:
-      - PUID=${USER_ID:?}
-      - PGID=${GROUP_ID:?}
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        if [ ! -s /database/filebrowser.db ]; then
-          filebrowser config init --database /database/filebrowser.db
-          filebrowser config set --auth.method=json --database /database/filebrowser.db
-        fi
-        filebrowser config set --root /srv --database /database/filebrowser.db
-        filebrowser users add ${ADMIN_USER:?} ${ADMIN_PASSWORD:?} --perm.admin --scope "." --database /database/filebrowser.db || \
-        filebrowser users update ${ADMIN_USER:?} --password ${ADMIN_PASSWORD:?} --scope "." --database /database/filebrowser.db
-        filebrowser --database /database/filebrowser.db --address 0.0.0.0 --port 8080 --root /srv
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-        reservations:
-          memory: 256M
+      - MARIADB_DATABASE=${NEXTCLOUD_DATABASE:?}
+      - MARIADB_USER=${DATABASE_USER:?}
+      - MARIADB_PASSWORD=${DATABASE_PASSWORD:?}
+      - MARIADB_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD:?}
+    networks:
+      - private_cloud_network
+
+  nextcloud-redis:
+    image: docker.io/library/redis:alpine
+    restart: always
+    container_name: nextcloud-redis
+    networks:
+      - private_cloud_network
+
+  nextcloud:
+    image: docker.io/library/nextcloud:latest
+    restart: always
+    container_name: nextcloud
+    volumes:
+      - ${PATH_TO_FOLDER:?}:/var/www/external_storage:z
+      - ./data:/var/www/html/data:z
+      - ./config:/var/www/html/config:z
+    environment:
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD:?}
+      - MYSQL_DATABASE=${NEXTCLOUD_DATABASE:?}
+      - MYSQL_USER=${DATABASE_USER:?}
+      - MYSQL_HOST=nextcloud-db
+      - REDIS_HOST=nextcloud-redis
+
+      - NEXTCLOUD_ADMIN_USER=${NEXTCLOUD_ADMIN:?}
+      - NEXTCLOUD_ADMIN_PASSWORD=${NEXTCLOUD_PASSWORD:?}
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_DOMAIN:?}
+    depends_on:
+      - nextcloud-db
+      - nextcloud-redis
     networks:
       - cloud_network
+      - private_cloud_network
 
 networks:
   cloud_network:
     name: cloud_network
+    driver: bridge
+  private_cloud_network:
+    name: private_cloud_network
     driver: bridge

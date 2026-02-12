@@ -2,7 +2,7 @@
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
-    server_name domain.ru www.domain.ru git.domain.ru cloud.domain.ru m.domain.ru chat.domain.ru;
+    server_name domain.ru www.domain.ru git.domain.ru disk.domain.ru cloud.domain.ru m.domain.ru chat.domain.ru todo.domain.ru draw.domain.ru;
 
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -55,13 +55,13 @@ server {
     }
 }
 
-# 4. Cloud
+# 4. Disk
 server {
     listen 443 ssl;
-    server_name cloud.domain.ru;
+    server_name disk.domain.ru;
 
-    ssl_certificate /etc/letsencrypt/live/cloud.domain.ru/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/cloud.domain.ru/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/disk.domain.ru/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/disk.domain.ru/privkey.pem;
 
     client_max_body_size 0;
 

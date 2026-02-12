@@ -18,7 +18,9 @@ gitea/config/*
 matrix/data/*
 matrix/db
 
-cloud/filebrowser.db
+cloud/db
+cloud/data
+cloud/config
 
 memos
 

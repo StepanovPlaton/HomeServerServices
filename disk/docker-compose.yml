@@ -1,0 +1,40 @@
+services:
+  filebrowser:
+    image: docker.io/filebrowser/filebrowser:latest
+    container_name: filebrowser
+    restart: always
+    volumes:
+      # Папка с вашими файлами (замените /path/to/your/files на реальный путь)
+      - ${SHARED_FOLDER}:/srv
+      # База данных настроек и пользователей
+      - ./filebrowser.db:/database/filebrowser.db
+      # (Опционально) Конфигурационный файл
+      # - ./settings.json:/config/settings.json
+    environment:
+      - PUID=${USER_ID:?}
+      - PGID=${GROUP_ID:?}
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        if [ ! -s /database/filebrowser.db ]; then
+          filebrowser config init --database /database/filebrowser.db
+          filebrowser config set --auth.method=json --database /database/filebrowser.db
+        fi
+        filebrowser config set --root /srv --database /database/filebrowser.db
+        filebrowser users add ${ADMIN_USER:?} ${ADMIN_PASSWORD:?} --perm.admin --scope "." --database /database/filebrowser.db || \
+        filebrowser users update ${ADMIN_USER:?} --password ${ADMIN_PASSWORD:?} --scope "." --database /database/filebrowser.db
+        filebrowser --database /database/filebrowser.db --address 0.0.0.0 --port 8080 --root /srv
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 256M
+    networks:
+      - disk_network
+
+networks:
+  disk_network:
+    name: disk_network
+    driver: bridge
