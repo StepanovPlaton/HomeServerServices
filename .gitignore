@@ -28,5 +28,6 @@ disk/filebrowser.db
 memos/memos/*.db
 memos/memos/*.db-wal
 memos/memos/*.db-shm
+memos/memos/.thumbnail_cache
 
 !.keep
