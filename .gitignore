@@ -18,6 +18,9 @@ gitea/config/*
 matrix/data/*
 matrix/db
 
+xray/config/config.json
+xray/config/*.tmp
+
 cloud/db
 cloud/data
 cloud/config

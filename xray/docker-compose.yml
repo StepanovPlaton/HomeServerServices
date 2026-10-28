@@ -1,0 +1,27 @@
+services:
+  xray:
+    image: ghcr.io/xtls/xray-core:latest
+    container_name: xray
+    restart: always
+    ports:
+      # Порт должен совпадать с XRAY_PORT в config/config.json (генерируется setup.sh)
+      - "${XRAY_PORT:?}:${XRAY_PORT:?}/tcp"
+    volumes:
+      # Монтируем каталог целиком, чтобы не использовать конфиги по умолчанию из образа
+      - ./config:/usr/local/etc/xray:ro,Z
+    environment:
+      - TZ=${TZ:-Europe/Samara}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 128M
+        reservations:
+          memory: 64M
+    networks:
+      - xray_network
+
+networks:
+  xray_network:
+    name: xray_network
+    driver: bridge
