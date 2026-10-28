@@ -112,7 +112,7 @@ mv config/config.json.tmp config/config.json
 echo "Проверка конфигурации..."
 "$ENGINE" run --rm -v "$(pwd)/config:/usr/local/etc/xray:ro,Z" "$IMAGE" run -test -confdir /usr/local/etc/xray
 
-LINK="vless://${XRAY_UUID}@${PUBLIC_HOST}:${XRAY_PORT}?encryption=none&flow=xtls-rprx-vision&security=reality&sni=${XRAY_SERVER_NAME}&fp=chrome&pbk=${XRAY_PUBLIC_KEY}&sid=${XRAY_SHORT_ID}&type=tcp&headerType=none&spx=%2F#Xray-Home"
+LINK="vless://${XRAY_UUID}@${PUBLIC_HOST}:${XRAY_PORT}?encryption=none&security=reality&sni=${XRAY_SERVER_NAME}&fp=chrome&pbk=${XRAY_PUBLIC_KEY}&sid=${XRAY_SHORT_ID}&type=tcp&headerType=none&spx=%2F#Xray-Home"
 
 cat <<EOF
 
