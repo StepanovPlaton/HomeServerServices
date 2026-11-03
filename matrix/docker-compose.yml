@@ -7,6 +7,7 @@ services:
       - ./data:/data
     environment:
       - SYNAPSE_CONFIG_PATH=/data/homeserver.yaml
+      - OPENSSL_CONF=/data/openssl.cnf
     depends_on:
       - matrix-db
     deploy:
